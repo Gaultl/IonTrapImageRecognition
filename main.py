@@ -2,7 +2,80 @@
 import cv2 as cv
 import numpy as np
 
-# Read image
+import os
+
+pathList = []
+
+def getFilePaths(folderPath):
+    # folderPath = input("Enter folder path:\n")
+    for file in os.listdir(folderPath):
+        pathList.append(os.path.join(folderPath, file))
+    return pathList
+
+
+images = getFilePaths(r"C:\Users\laure\Downloads\dino_lite_2")
+
+for image in images:
+
+    im = cv.imread(image, 0)
+
+    height, width = im.shape
+
+    params = cv.SimpleBlobDetector_Params()
+
+    color = 255
+
+    ret,thresh1 = cv.threshold(im,220,255,cv.THRESH_BINARY)
+    # params.minThreshold = 20
+    # params.maxThreshold = 255
+
+    params.filterByArea = False
+    # params.minArea = 1
+    # params.maxArea = 10000
+
+    params.filterByColor = True
+    params.blobColor = 255
+
+    params.filterByCircularity = False
+    # params.minCircularity = 0.785
+    # params.maxCircularity = 1
+
+    params.filterByInertia = True
+    params.minInertiaRatio = .001
+    params.maxInertiaRatio = 10
+
+    params.filterByConvexity = True
+    params.minConvexity = 0.001
+    params.maxConvexity = 10
+
+    detector = cv.SimpleBlobDetector_create(params)
+
+    # down_width = int(width)
+    # down_height = int(height)
+    # down_points = (down_width, down_height)
+    # resized_down = cv.resize(im, down_points, interpolation= cv.INTER_LINEAR)
+
+    # Detect blobs.
+    keypoints = detector.detect(thresh1)
+
+    # Draw detected blobs as red circles.
+    # cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS ensures the size of the circle corresponds to the size of blob
+    blank = np.zeros((1, 1))
+    blobs = cv.drawKeypoints(thresh1, keypoints, blank, (0, 0, 255), cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+
+    down_width = int(width)
+    down_height = int(height)
+    down_points = (down_width, down_height)
+    resized_down = cv.resize(blobs, down_points, interpolation= cv.INTER_LINEAR)
+
+    print(len(keypoints))
+
+    # Show keypoints
+    cv.imshow("Blobs Using Color", resized_down)
+    cv.waitKey(0)
+    cv.destroyAllWindows()
+
+# Test images
 # im = cv.imread(r"C:\Users\laure\Pictures\longBlobs.jpg", 0)
 # im = cv.imread(r"C:\Users\laure\Downloads\IMG_5756.jpg", 0)
 # im = cv.imread(r"C:\Users\laure\Downloads\IMG_3588.PNG", 0)
@@ -31,55 +104,5 @@ import numpy as np
 # im = cv.imread(r"C:\Users\laure\Downloads\dino_lite_2\A042 - 20241020_102831.bmp", 0)
 # im = cv.imread(r"C:\Users\laure\Downloads\dino_lite_2\A043 - 20241020_102833.bmp", 0)
 # im = cv.imread(r"C:\Users\laure\Pictures\CroppedA041 - 20241020_102829.bmp", 0)
-height, width = im.shape
-
-params = cv.SimpleBlobDetector_Params()
-
-color = 255
-
-ret,thresh1 = cv.threshold(im,100,255,cv.THRESH_BINARY)
-# params.minThreshold = 20
-# params.maxThreshold = 255
-
-params.filterByArea = True
-params.minArea = 5
-params.maxArea = 10000
-
-params.filterByColor = True
-params.blobColor = 255
-
-params.filterByCircularity = False
-# params.minCircularity = 0.785
-# params.maxCircularity = 1
-
-params.filterByInertia = True
-params.minInertiaRatio = .001
-params.maxInertiaRatio = 10
-
-
-detector = cv.SimpleBlobDetector_create(params)
-
-# down_width = int(width)
-# down_height = int(height)
-# down_points = (down_width, down_height)
-# resized_down = cv.resize(im, down_points, interpolation= cv.INTER_LINEAR)
-
-# Detect blobs.
-keypoints = detector.detect(thresh1)
-
-# Draw detected blobs as red circles.
-# cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS ensures the size of the circle corresponds to the size of blob
-blank = np.zeros((1, 1))
-blobs = cv.drawKeypoints(thresh1, keypoints, blank, (0, 0, 255), cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-
-down_width = int(width)
-down_height = int(height)
-down_points = (down_width, down_height)
-resized_down = cv.resize(blobs, down_points, interpolation= cv.INTER_LINEAR)
-
-print(len(keypoints))
-
-# Show keypoints
-cv.imshow("Blobs Using Color", resized_down)
-cv.waitKey(0)
-cv.destroyAllWindows()
+# im = cv.imread(r"C:\Users\laure\Downloads\A046 - 20241020_110019.bmp", 0)
+# im = cv.imread(r"C:\Users\laure\Downloads\A053 - 20241020_110028.bmp", 0)
