@@ -1,59 +1,52 @@
 # Standard imports
 import cv2 as cv
 import numpy as np
-
+import matplotlib.pyplot as plt
 import os
 
-pathList = []
 
 def getFilePaths(folderPath):
+    pathList = []
     # folderPath = input("Enter folder path:\n")
     for file in os.listdir(folderPath):
         pathList.append(os.path.join(folderPath, file))
     return pathList
 
 
-images = getFilePaths(r"C:\Users\laure\Downloads\dino_lite_2")
+images = getFilePaths(r"C:\Users\laure\OneDrive\images\ISEFDOEMidLow")
+ions = []
+times = []
+i = 0
+time = 0
+
+#Setup detector
+params = cv.SimpleBlobDetector_Params()
+
+color = 255
+
+params.filterByArea = False
+
+params.filterByColor = True
+params.blobColor = 255
+
+params.filterByCircularity = False
+
+params.filterByInertia = True
+params.minInertiaRatio = .001
+params.maxInertiaRatio = 10
+
+params.filterByConvexity = True
+params.minConvexity = 0.001
+params.maxConvexity = 10
+
+detector = cv.SimpleBlobDetector_create(params)
 
 for image in images:
-
     im = cv.imread(image, 0)
 
     height, width = im.shape
 
-    params = cv.SimpleBlobDetector_Params()
-
-    color = 255
-
-    ret,thresh1 = cv.threshold(im,220,255,cv.THRESH_BINARY)
-    # params.minThreshold = 20
-    # params.maxThreshold = 255
-
-    params.filterByArea = False
-    # params.minArea = 1
-    # params.maxArea = 10000
-
-    params.filterByColor = True
-    params.blobColor = 255
-
-    params.filterByCircularity = False
-    # params.minCircularity = 0.785
-    # params.maxCircularity = 1
-
-    params.filterByInertia = True
-    params.minInertiaRatio = .001
-    params.maxInertiaRatio = 10
-
-    params.filterByConvexity = True
-    params.minConvexity = 0.001
-    params.maxConvexity = 10
-
-    detector = cv.SimpleBlobDetector_create(params)
-
-    # down_width = int(width)
-    # down_height = int(height)
-    # down_points = (down_width, down_height)
-    # resized_down = cv.resize(im, down_points, interpolation= cv.INTER_LINEAR)
+    ret, thresh1 = cv.threshold(im, 75, 255, cv.THRESH_BINARY)
 
     # Detect blobs.
     keypoints = detector.detect(thresh1)
@@ -66,14 +59,41 @@ for image in images:
     down_width = int(width)
     down_height = int(height)
     down_points = (down_width, down_height)
-    resized_down = cv.resize(blobs, down_points, interpolation= cv.INTER_LINEAR)
+    resized_down = cv.resize(blobs, down_points, interpolation=cv.INTER_LINEAR)
 
     print(len(keypoints))
+    ions.append(len(keypoints))
+    # times.append(image[-10:-6])
+    times.append(time)
+    time += 15
 
-    # Show keypoints
-    cv.imshow("Blobs Using Color", resized_down)
-    cv.waitKey(0)
-    cv.destroyAllWindows()
+    if i <= 10:
+        # Show keypoints
+        cv.imshow("Blobs Using Color", resized_down)
+        cv.waitKey(0)
+        cv.destroyAllWindows()
+        i += 1
+
+
+csv = np.array([ions,times])
+
+print(csv)
+
+print(ions)
+print(times)
+print(images)
+
+#Saves data as a csv file
+np.savetxt("ISEF2025DOEMidLow.csv", csv, delimiter = ",")
+
+# y = [ions[1], ions[int(1*(len(ions)/8))], ions[int(2*(len(ions)/8))], ions[int(3*(len(ions)/8))], ions[int(4*(len(ions)/8))], ions[int(5*(len(ions)/8))], ions[int(6*(len(ions)/8 - 1))], ions[int(7*(len(ions)/8 - 1))], ions[int(8*(len(ions)/8 - 1))]]#, ions[int(9*(len(ions)/11))]]
+# x = [times[1], times[int(1*(len(ions)/8))], times[int(2*(len(ions)/8))], times[int(3*(len(ions)/8))], times[int(4*(len(ions)/8))], times[int(5*(len(ions)/8))], times[int(6*(len(ions)/8 - 1))], times[int(7*(len(ions)/8 - 1))], times[int(8*(len(ions)/8 - 1))]] #, times[int(9*(len(ions)/11))]]
+#
+# print(x)
+# print(y)
+
+plt.plot(times, ions, color = 'red')
+plt.show()
 
 # Test images
 # im = cv.imread(r"C:\Users\laure\Pictures\longBlobs.jpg", 0)
