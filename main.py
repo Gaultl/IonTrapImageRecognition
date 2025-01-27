@@ -13,7 +13,7 @@ def getFilePaths(folderPath):
     return pathList
 
 
-images = getFilePaths(r"C:\Users\laure\OneDrive\images\ISEFDOEMidLow")
+images = getFilePaths(r"C:\Users\laure\OneDrive\images\ISEFDOE_HighAC_LowDC")
 ions = []
 times = []
 i = 0
@@ -74,17 +74,29 @@ for image in images:
         cv.destroyAllWindows()
         i += 1
 
+plt.plot(times, ions, color='red')
+plt.show()
 
-csv = np.array([ions,times])
+pic = 0
+while pic < len(ions):
+    if ions[pic] == 0:
+        del ions[pic]
+        del times[pic]
+        pic -= 1
+    pic += 1
+
+csv = np.transpose(np.array([ions, times]))
 
 print(csv)
 
 print(ions)
 print(times)
-print(images)
+# print(images)
 
-#Saves data as a csv file
-np.savetxt("ISEF2025DOEMidLow.csv", csv, delimiter = ",")
+# Saves data as a csv file
+print("Enter the name of your file (include .csv at the end)")
+csvName = input()
+np.savetxt(csvName, csv, delimiter=",")
 
 # y = [ions[1], ions[int(1*(len(ions)/8))], ions[int(2*(len(ions)/8))], ions[int(3*(len(ions)/8))], ions[int(4*(len(ions)/8))], ions[int(5*(len(ions)/8))], ions[int(6*(len(ions)/8 - 1))], ions[int(7*(len(ions)/8 - 1))], ions[int(8*(len(ions)/8 - 1))]]#, ions[int(9*(len(ions)/11))]]
 # x = [times[1], times[int(1*(len(ions)/8))], times[int(2*(len(ions)/8))], times[int(3*(len(ions)/8))], times[int(4*(len(ions)/8))], times[int(5*(len(ions)/8))], times[int(6*(len(ions)/8 - 1))], times[int(7*(len(ions)/8 - 1))], times[int(8*(len(ions)/8 - 1))]] #, times[int(9*(len(ions)/11))]]
@@ -92,10 +104,11 @@ np.savetxt("ISEF2025DOEMidLow.csv", csv, delimiter = ",")
 # print(x)
 # print(y)
 
-plt.plot(times, ions, color = 'red')
-plt.show()
+# plt.plot(times, ions, color = 'blue')
+# plt.show()
 
 # Test images
+
 # im = cv.imread(r"C:\Users\laure\Pictures\longBlobs.jpg", 0)
 # im = cv.imread(r"C:\Users\laure\Downloads\IMG_5756.jpg", 0)
 # im = cv.imread(r"C:\Users\laure\Downloads\IMG_3588.PNG", 0)
