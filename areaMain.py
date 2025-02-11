@@ -13,7 +13,7 @@ def getFilePaths(folderPath):
     return pathList
 
 
-images = getFilePaths(r"C:\Users\laure\OneDrive\images\ISEFDOE_HighAC_HighDC")
+images = getFilePaths(r"C:\Users\laure\OneDrive\images\ISEF_Hemisphere_LowAC")
 areas = []
 times = []
 i = 0
@@ -30,13 +30,33 @@ for image in images:
 
     ret, thresh1 = cv.threshold(im, 75, 255, cv.THRESH_BINARY)
 
-    # Calculate area
-    for j in thresh1:
-        for k in j:
+    if i <= 10:
+        # Show keypoints
+        cv.imshow("Blobs Using Color", thresh1)
+        cv.waitKey(0)
+        cv.destroyAllWindows()
+    i += 1
+
+    # Linear area calculation
+    j = 50
+    while j < len(thresh1):
+        for k in thresh1[j]:
             if k != 0:
                 pixels += 1
+        j += 1
 
-    if i == 0:
+    # Hemisphere area calculation
+    j = 129
+    k = 248
+    while j < 287:
+        while k < 426:
+            pix = thresh1[j,k]
+            if pix != 0:
+                pixels += 1
+            k += 1
+        j += 1
+
+    if i == 1:
         denom = pixels
 
     print(pixels/denom)
@@ -44,12 +64,12 @@ for image in images:
     times.append(time)
     time += 15
 
-    if i <= 10:
-        # Show keypoints
-        cv.imshow("Blobs Using Color", thresh1)
-        cv.waitKey(0)
-        cv.destroyAllWindows()
-        i += 1
+
+    # Mid High shenanigans
+    # if i < 1298:
+    #     time += 0.25
+    # else:
+    #     time += 15
 
 plt.plot(times, areas, color='red')
 plt.title(input("Enter the title of the graph:\n"))
