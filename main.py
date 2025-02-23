@@ -13,7 +13,7 @@ def getFilePaths(folderPath):
     return pathList
 
 
-images = getFilePaths(r"C:\Users\laure\OneDrive\images\ISEFDOE_HighAC_LowDC")
+images = getFilePaths(r"C:\Users\laure\OneDrive\images\ISEFDOE_LowAC_HighDC")
 ions = []
 times = []
 i = 0
@@ -63,7 +63,6 @@ for image in images:
 
     print(len(keypoints))
     ions.append(len(keypoints))
-    # times.append(image[-10:-6])
     times.append(time)
     time += 15
 
@@ -75,6 +74,7 @@ for image in images:
         i += 1
 
 plt.plot(times, ions, color='red')
+plt.title(input("Enter the title of the graph:\n"))
 plt.show()
 
 pic = 0
@@ -85,7 +85,7 @@ while pic < len(ions):
         pic -= 1
     pic += 1
 
-csv = np.transpose(np.array([ions, times]))
+csv = np.transpose(np.array([times, ions]))
 
 print(csv)
 

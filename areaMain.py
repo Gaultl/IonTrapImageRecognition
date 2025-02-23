@@ -13,7 +13,7 @@ def getFilePaths(folderPath):
     return pathList
 
 
-images = getFilePaths(r"C:\Users\laure\OneDrive\images\ISEF_Hemisphere_LowAC")
+images = getFilePaths(r"C:\Users\laure\OneDrive\images\ISEFDOE_MidAC_HighDC_Re_Rerun")
 areas = []
 times = []
 i = 0
@@ -46,15 +46,15 @@ for image in images:
         j += 1
 
     # Hemisphere area calculation
-    j = 129
-    k = 248
-    while j < 287:
-        while k < 426:
-            pix = thresh1[j,k]
-            if pix != 0:
-                pixels += 1
-            k += 1
-        j += 1
+    # j = 129
+    # while j < 287:
+    #     k = 248
+    #     while k < 426: #374
+    #         pix = thresh1[j,k]
+    #         if pix != 0:
+    #             pixels += 1
+    #         k += 1
+    #     j += 1
 
     if i == 1:
         denom = pixels
